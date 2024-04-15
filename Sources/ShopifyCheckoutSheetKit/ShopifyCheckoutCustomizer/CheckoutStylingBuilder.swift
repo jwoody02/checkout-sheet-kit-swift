@@ -31,6 +31,11 @@ public class CheckoutStylingBuilder {
     }
     
     @discardableResult
+    public func hideFooter() -> CheckoutStylingBuilder {
+        return addStyle(for: .footer, style: "display: none!important;")
+    }
+    
+    @discardableResult
     public func setPageFont(to fontfamily: String) -> CheckoutStylingBuilder {
         let fontString = "font-family: \(fontfamily);"
         return addStyle(for: .body, style: fontString)
