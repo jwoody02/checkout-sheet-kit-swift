@@ -42,8 +42,6 @@ class ProgressBarView: UIView {
 			progressBar.topAnchor.constraint(equalTo: topAnchor),
 			progressBar.heightAnchor.constraint(equalToConstant: 1)
 		])
-
-		progressBar.tintColor = ShopifyCheckoutSheetKit.configuration.tintColor
 	}
 
 	override func didMoveToSuperview() {
@@ -68,6 +66,7 @@ class ProgressBarView: UIView {
 	func startAnimating() {
 		alpha = 1
 		isHidden = false
+        progressBar.tintColor = ShopifyCheckoutSheetKit.configuration.tintColor
 	}
 
 	func stopAnimating() {
