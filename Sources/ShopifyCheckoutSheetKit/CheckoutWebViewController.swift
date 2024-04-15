@@ -163,42 +163,43 @@ extension CheckoutWebViewController: CheckoutWebViewDelegate {
 
 	func checkoutViewDidStartNavigation() {}
 
-	func checkoutViewDidFinishNavigation() {
+    func checkoutViewDidFinishNavigation() {
         // Stop any progress animation
         self.progressBar.stopAnimating()
 
-        // JavaScript to inject CSS and potentially execute scripts
+        // Prepare CSS to inject
+        let cssString = checkoutStyling.build().css
+        let escapedCSSString = cssString
+            .replacingOccurrences(of: "\\", with: "\\\\")
+            .replacingOccurrences(of: "\"", with: "\\\"")
+            .replacingOccurrences(of: "\'", with: "\\\'")
+            .replacingOccurrences(of: "\n", with: "\\n")
+            .replacingOccurrences(of: "\r", with: "\\r")
+
+        // JavaScript to inject CSS
         let jsToInject = """
             var style = document.createElement('style');
             style.type = 'text/css';
-            style.innerHTML = '\(checkoutStyling.build().css)';
+            style.innerHTML = '\(escapedCSSString)';
             document.head.appendChild(style);
+            console.log('CSS Injected Successfully.');
             """
-        print("Debug: evaluating js: \n\(jsToInject)")
-        // print out current html for debugging
-        checkoutView.evaluateJavaScript("document.documentElement.outerHTML") { (html: Any?, error: Error?) in
-            if let html = html as? String {
-                print("************** Current HTML **************")
-                print(html)
-                print("************** End HTML **************")
-            }
-        }
+
         // Evaluate JavaScript in the current web view context
         checkoutView.evaluateJavaScript(jsToInject) { [weak self] result, error in
-            guard let checkoutView = self else { return }
-            if error != nil {
-                print("Error injecting CSS: \(String(describing: error))")
+            guard let self = self else { return }
+            if let error = error {
+                print("Error injecting CSS: \(error)")
                 return
             }
 
             // Fade in the web view only after CSS has been applied
             UIView.animate(withDuration: UINavigationController.hideShowBarDuration) {
-                self?.checkoutView.alpha = 1
+                self.checkoutView.alpha = 1
             }
-
-			
         }
     }
+
 
 	func checkoutViewDidCompleteCheckout(event: CheckoutCompletedEvent) {
 		ConfettiCannon.fire(in: view)
