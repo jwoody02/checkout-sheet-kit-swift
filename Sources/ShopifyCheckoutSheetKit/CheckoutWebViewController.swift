@@ -176,18 +176,27 @@ extension CheckoutWebViewController: CheckoutWebViewDelegate {
         
         // Evaluate JavaScript in the current web view context
         checkoutView.evaluateJavaScript(jsToInject) { [weak self] result, error in
-        guard let checkoutView = self else { return }
-        if error != nil {
-            print("Error injecting CSS: \(String(describing: error))")
-            return
-        }
+            guard let checkoutView = self else { return }
+            if error != nil {
+                print("Error injecting CSS: \(String(describing: error))")
+                return
+            }
 
-        // Fade in the web view only after CSS has been applied
-        UIView.animate(withDuration: UINavigationController.hideShowBarDuration) {
-            self?.checkoutView.alpha = 1
+            // Fade in the web view only after CSS has been applied
+            UIView.animate(withDuration: UINavigationController.hideShowBarDuration) {
+                self?.checkoutView.alpha = 1
+            }
+
+			// print out current html for debugging
+			checkoutView.checkoutView.evaluateJavaScript("document.documentElement.outerHTML") { (html: Any?, error: Error?) in
+				if let html = html as? String {
+					print("************** Current HTML **************")
+					print(html)
+					print("************** End HTML **************")
+				}
+			}
         }
     }
-}
 
 	func checkoutViewDidCompleteCheckout(event: CheckoutCompletedEvent) {
 		ConfettiCannon.fire(in: view)
