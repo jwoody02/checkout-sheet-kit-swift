@@ -173,7 +173,15 @@ extension CheckoutWebViewController: CheckoutWebViewDelegate {
             style.innerHTML = '\(checkoutStyling.build().css)';
             document.head.appendChild(style);
             """
-        
+        print("Debug: evaluating js: \n\(jsToInject)")
+        // print out current html for debugging
+        checkoutView.evaluateJavaScript("document.documentElement.outerHTML") { (html: Any?, error: Error?) in
+            if let html = html as? String {
+                print("************** Current HTML **************")
+                print(html)
+                print("************** End HTML **************")
+            }
+        }
         // Evaluate JavaScript in the current web view context
         checkoutView.evaluateJavaScript(jsToInject) { [weak self] result, error in
             guard let checkoutView = self else { return }
@@ -187,14 +195,7 @@ extension CheckoutWebViewController: CheckoutWebViewDelegate {
                 self?.checkoutView.alpha = 1
             }
 
-			// print out current html for debugging
-			checkoutView.checkoutView.evaluateJavaScript("document.documentElement.outerHTML") { (html: Any?, error: Error?) in
-				if let html = html as? String {
-					print("************** Current HTML **************")
-					print(html)
-					print("************** End HTML **************")
-				}
-			}
+			
         }
     }
 
