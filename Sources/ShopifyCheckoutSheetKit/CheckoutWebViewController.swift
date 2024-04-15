@@ -161,7 +161,11 @@ class CheckoutWebViewController: UIViewController, UIAdaptivePresentationControl
 
 extension CheckoutWebViewController: CheckoutWebViewDelegate {
 
-	func checkoutViewDidStartNavigation() {}
+	func checkoutViewDidStartNavigation() {
+        UIView.animate(withDuration: UINavigationController.hideShowBarDuration) {
+            self.checkoutView.alpha = 0
+        }
+    }
 
     func checkoutViewDidFinishNavigation() {
         // Stop any progress animation
@@ -194,9 +198,12 @@ extension CheckoutWebViewController: CheckoutWebViewDelegate {
             }
 
             // Fade in the web view only after CSS has been applied
-            UIView.animate(withDuration: UINavigationController.hideShowBarDuration) {
+			// wait 0.3 seconds before fading in the web view
+			DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+				UIView.animate(withDuration: UINavigationController.hideShowBarDuration) {
                 self.checkoutView.alpha = 1
             }
+			}
         }
     }
 
