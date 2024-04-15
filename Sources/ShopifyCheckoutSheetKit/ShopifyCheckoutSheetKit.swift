@@ -37,6 +37,12 @@ public var configuration = Configuration() {
 	}
 }
 
+/// Checkout styling builder for customizing the checkout.
+public var checkoutStyling: CheckoutStylingBuilder = CheckoutStylingBuilder()
+public func setStyleBuilder(_ builder: CheckoutStylingBuilder) {
+    checkoutStyling = builder
+}
+
 /// A convienence function for configuring the `ShopifyCheckoutSheetKit` library.
 public func configure(_ block: (inout Configuration) -> Void) {
 	block(&configuration)
@@ -57,5 +63,13 @@ public func preload(checkout url: URL) {
 public func present(checkout url: URL, from: UIViewController, delegate: CheckoutDelegate? = nil) -> CheckoutViewController {
 	let viewController = CheckoutViewController(checkout: url, delegate: delegate)
 	from.present(viewController, animated: true)
+	return viewController
+}
+
+/// Pushes checkout horizontally instead of vertically given a `UINavigationController`.
+@discardableResult 
+public func present(checkout url: URL, from: UINavigationController, delegate: CheckoutDelegate? = nil) -> CheckoutViewController {
+	let viewController = CheckoutViewController(checkout: url, delegate: delegate)
+	from.pushViewController(viewController, animated: true)
 	return viewController
 }

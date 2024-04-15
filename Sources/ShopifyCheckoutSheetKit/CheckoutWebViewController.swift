@@ -163,12 +163,31 @@ extension CheckoutWebViewController: CheckoutWebViewDelegate {
 	func checkoutViewDidStartNavigation() {}
 
 	func checkoutViewDidFinishNavigation() {
-		initialNavigation = false
-		self.progressBar.stopAnimating()
-		UIView.animate(withDuration: UINavigationController.hideShowBarDuration) { [weak checkoutView] in
-			checkoutView?.alpha = 1
-		}
-	}
+        // Stop any progress animation
+        self.progressBar.stopAnimating()
+
+        // JavaScript to inject CSS and potentially execute scripts
+        let jsToInject = """
+            var style = document.createElement('style');
+            style.type = 'text/css';
+            style.innerHTML = '\(checkoutStyling.build().css)';
+            document.head.appendChild(style);
+            """
+        
+        // Evaluate JavaScript in the current web view context
+        checkoutView.evaluateJavaScript(jsToInject) { [weak self] result, error in
+        guard let checkoutView = self else { return }
+        if error != nil {
+            print("Error injecting CSS: \(String(describing: error))")
+            return
+        }
+
+        // Fade in the web view only after CSS has been applied
+        UIView.animate(withDuration: UINavigationController.hideShowBarDuration) {
+            self?.checkoutView.alpha = 1
+        }
+    }
+}
 
 	func checkoutViewDidCompleteCheckout(event: CheckoutCompletedEvent) {
 		ConfettiCannon.fire(in: view)
