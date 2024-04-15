@@ -61,15 +61,15 @@ public func preload(checkout url: URL) {
 /// Presents the checkout from a given `UIViewController`.
 @discardableResult
 public func present(checkout url: URL, from: UIViewController, delegate: CheckoutDelegate? = nil) -> CheckoutViewController {
-	let viewController = CheckoutViewController(checkout: url, delegate: delegate)
+    let viewController = CheckoutViewController(checkout: url, delegate: delegate, pushType: .present)
 	from.present(viewController, animated: true)
 	return viewController
 }
 
 /// Pushes checkout horizontally instead of vertically given a `UINavigationController`.
 @discardableResult 
-public func present(checkout url: URL, from: UINavigationController, delegate: CheckoutDelegate? = nil) -> CheckoutViewController {
-	let viewController = CheckoutViewController(checkout: url, delegate: delegate)
+public func push(checkout url: URL, from: UINavigationController, delegate: CheckoutDelegate? = nil) -> CheckoutViewController {
+    let viewController = CheckoutViewController(checkout: url, delegate: delegate, pushType: .push)
 	from.pushViewController(viewController, animated: true)
 	return viewController
 }

@@ -25,8 +25,8 @@ import UIKit
 import SwiftUI
 
 public class CheckoutViewController: UINavigationController {
-	public init(checkout url: URL, delegate: CheckoutDelegate? = nil) {
-		let rootViewController = CheckoutWebViewController(checkoutURL: url, delegate: delegate)
+    public init(checkout url: URL, delegate: CheckoutDelegate? = nil, pushType: PushType) {
+		let rootViewController = CheckoutWebViewController(checkoutURL: url, delegate: delegate, pushType: pushType)
 		rootViewController.notifyPresented()
 		super.init(rootViewController: rootViewController)
 		presentationController?.delegate = rootViewController
@@ -52,7 +52,7 @@ extension CheckoutViewController {
 		}
 
 		public func makeUIViewController(context: Self.Context) -> CheckoutViewController {
-			return CheckoutViewController(checkout: checkoutURL!, delegate: delegate)
+            return CheckoutViewController(checkout: checkoutURL!, delegate: delegate, pushType: .present)
 		}
 
 		public func updateUIViewController(_ uiViewController: CheckoutViewController, context: Self.Context) {
@@ -75,7 +75,7 @@ public struct CheckoutSheet: UIViewControllerRepresentable, CheckoutConfigurable
 	}
 
 	public func makeUIViewController(context: Self.Context) -> CheckoutViewController {
-		return CheckoutViewController(checkout: checkoutURL, delegate: delegate)
+        return CheckoutViewController(checkout: checkoutURL, delegate: delegate, pushType: .present)
 	}
 
 	public func updateUIViewController(_ uiViewController: CheckoutViewController, context: Self.Context) {}
