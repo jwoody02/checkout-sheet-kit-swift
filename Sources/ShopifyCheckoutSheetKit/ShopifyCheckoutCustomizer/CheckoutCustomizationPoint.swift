@@ -13,6 +13,10 @@ public enum CheckoutCustomizationPoint: String {
     case footer = "footer"
     case button = "button"
     case inputField = "input-field"
+    case h2 = "h2"
+    case h3 = "h3"
+    case p = "p"
+    case div = "div"
     
     var cssSelector: String {
         return self.rawValue

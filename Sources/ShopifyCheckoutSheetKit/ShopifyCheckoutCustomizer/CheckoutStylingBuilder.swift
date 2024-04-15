@@ -26,13 +26,18 @@ public class CheckoutStylingBuilder {
     }
     
     @discardableResult
-    public func disableHeader() -> CheckoutStylingBuilder {
-        return addStyle(for: .header, style: "display: none!important;")
+    public func disableMobileHeader() -> CheckoutStylingBuilder {
+        return addStyle(for: .mobileHeader, style: "display: none!important;")
     }
     
     @discardableResult
     public func setPageFont(to fontfamily: String) -> CheckoutStylingBuilder {
-        return addStyle(for: .body, style: "font-family: \(fontfamily);")
+        let fontString = "font-family: \(fontfamily);"
+        return addStyle(for: .body, style: fontString)
+        .addStyle(for: .h2, style: fontString)
+        .addStyle(for: .h3, style: fontString)
+        .addStyle(for: .p, style: fontString)
+        .addStyle(for: .div, style: fontString)
     }
 
     @discardableResult

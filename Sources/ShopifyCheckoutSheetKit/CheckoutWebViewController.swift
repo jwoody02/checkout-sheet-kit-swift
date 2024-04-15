@@ -118,6 +118,7 @@ class CheckoutWebViewController: UIViewController, UIAdaptivePresentationControl
 			if let newProgress = change.newValue {
 				let estimatedProgress = Float(newProgress)
 				self.progressBar.setProgress(estimatedProgress, animated: true)
+                self.progressBar.tintColor = ShopifyCheckoutSheetKit.configuration.spinnerColor
 				if estimatedProgress < 1.0 {
 					self.progressBar.startAnimating()
 				} else {
