@@ -24,10 +24,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 import UIKit
 import WebKit
 
-public enum PushType {
-    case push
-    case present
-}
 class CheckoutWebViewController: UIViewController, UIAdaptivePresentationControllerDelegate {
 
 	// MARK: Properties
@@ -45,7 +41,6 @@ class CheckoutWebViewController: UIViewController, UIAdaptivePresentationControl
 	internal var initialNavigation: Bool = true
 
 	private let checkoutURL: URL
-	private let pushType: PushType
 
 	private lazy var closeBarButtonItem: UIBarButtonItem = {
 		return UIBarButtonItem(
@@ -57,10 +52,9 @@ class CheckoutWebViewController: UIViewController, UIAdaptivePresentationControl
 
 	// MARK: Initializers
 
-	public init(checkoutURL url: URL, delegate: CheckoutDelegate? = nil, pushType: PushType) {
+	public init(checkoutURL url: URL, delegate: CheckoutDelegate? = nil) {
 		self.checkoutURL = url
 		self.delegate = delegate
-		self.pushType = pushType
 
 		let checkoutView = CheckoutWebView.for(checkout: url)
 		checkoutView.translatesAutoresizingMaskIntoConstraints = false
@@ -71,13 +65,7 @@ class CheckoutWebViewController: UIViewController, UIAdaptivePresentationControl
 
 		title = ShopifyCheckoutSheetKit.configuration.title
 
-        switch pushType {
-        case .present:
-            navigationItem.rightBarButtonItem = closeBarButtonItem
-        case .push:
-            closeBarButtonItem.image = UIImage(systemName: "arrow.left")
-            navigationItem.leftBarButtonItem = closeBarButtonItem
-        }
+		navigationItem.rightBarButtonItem = closeBarButtonItem
 
 		checkoutView.viewDelegate = self
 
