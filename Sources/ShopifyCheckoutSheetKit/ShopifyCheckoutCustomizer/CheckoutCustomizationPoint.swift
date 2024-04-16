@@ -17,6 +17,7 @@ public enum CheckoutCustomizationPoint: String {
     case h3 = "h3"
     case p = "p"
     case div = "div"
+    case payNowButton = ".pay-now-button"
     
     var cssSelector: String {
         return self.rawValue

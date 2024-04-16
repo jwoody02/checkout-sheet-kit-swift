@@ -182,6 +182,13 @@ extension CheckoutWebViewController: CheckoutWebViewDelegate {
 
         // JavaScript to inject CSS
         let jsToInject = """
+            document.querySelectorAll('button').forEach(function(button) {
+              if (button.textContent.trim().toLowerCase() === 'pay now'.toLowerCase()) {
+                button.classList.add('pay-now-button');
+              }
+            });
+            
+            
             var style = document.createElement('style');
             style.type = 'text/css';
             style.innerHTML = '\(escapedCSSString)';
@@ -194,6 +201,9 @@ extension CheckoutWebViewController: CheckoutWebViewDelegate {
             guard let self = self else { return }
             if let error = error {
                 print("Error injecting CSS: \(error)")
+                UIView.animate(withDuration: UINavigationController.hideShowBarDuration) {
+                    self.checkoutView.alpha = 1
+                }
                 return
             }
 
