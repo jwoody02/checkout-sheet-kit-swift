@@ -28,7 +28,7 @@ public enum PushType {
     case push
     case present
 }
-class CheckoutWebViewController: UIViewController, UIAdaptivePresentationControllerDelegate {
+public class CheckoutWebViewController: UIViewController, UIAdaptivePresentationControllerDelegate {
 
 	// MARK: Properties
 
@@ -75,7 +75,8 @@ class CheckoutWebViewController: UIViewController, UIAdaptivePresentationControl
         case .present:
             navigationItem.rightBarButtonItem = closeBarButtonItem
         case .push:
-            closeBarButtonItem.image = UIImage(systemName: "arrow.left")
+            let currentImageConfig = closeBarButtonItem.image?.traitCollection.imageConfiguration
+            closeBarButtonItem.image = UIImage(systemName: "arrow.left", withConfiguration: currentImageConfig)
             navigationItem.leftBarButtonItem = closeBarButtonItem
         }
 
@@ -122,6 +123,8 @@ class CheckoutWebViewController: UIViewController, UIAdaptivePresentationControl
 
 		observeProgressChanges()
 		loadCheckout()
+        
+        self.progressBar.tintColor = ShopifyCheckoutSheetKit.configuration.spinnerColor
 	}
 
 	internal func observeProgressChanges() {
@@ -130,7 +133,9 @@ class CheckoutWebViewController: UIViewController, UIAdaptivePresentationControl
 			if let newProgress = change.newValue {
 				let estimatedProgress = Float(newProgress)
 				self.progressBar.setProgress(estimatedProgress, animated: true)
-                self.progressBar.tintColor = ShopifyCheckoutSheetKit.configuration.spinnerColor
+                DispatchQueue.main.async {
+                    self.progressBar.tintColor = ShopifyCheckoutSheetKit.configuration.spinnerColor
+                }
 				if estimatedProgress < 1.0 {
 					self.progressBar.startAnimating()
 				} else {
