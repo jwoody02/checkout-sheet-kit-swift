@@ -161,9 +161,6 @@ public class CheckoutWebViewController: UIViewController, UIAdaptivePresentation
 
 	@IBAction internal func close() {
 		didCancel()
-        if pushType == .push {
-            navigationController?.popViewController(animated: true)
-        }
 	}
 
 	public func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
