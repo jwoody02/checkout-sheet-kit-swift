@@ -25,7 +25,6 @@ public class CheckoutStylingBuilder {
         return self
     }
     
-    
     @discardableResult
     public func disableMobileHeader() -> CheckoutStylingBuilder {
         return addStyle(for: .mobileHeader, style: "display: none!important;")
