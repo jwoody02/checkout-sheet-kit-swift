@@ -35,6 +35,7 @@ public class CheckoutWebViewController: UIViewController, UIAdaptivePresentation
 	internal lazy var progressBar: ProgressBarView = {
 		let progressBar = ProgressBarView(frame: .zero)
 		progressBar.translatesAutoresizingMaskIntoConstraints = false
+        progressBar.tintColor = .black
 		return progressBar
 	}()
 
@@ -161,17 +162,17 @@ public class CheckoutWebViewController: UIViewController, UIAdaptivePresentation
 		delegate?.checkoutDidCancel()
 	}
 }
-
+import os.log
 extension CheckoutWebViewController: CheckoutWebViewDelegate {
 
 	func checkoutViewDidStartNavigation() {
-        UIView.animate(withDuration: UINavigationController.hideShowBarDuration) {
-            self.checkoutView.alpha = 0
-        }
+//        UIView.animate(withDuration: UINavigationController.hideShowBarDuration) {
+//        }
     }
 
     func checkoutViewDidFinishNavigation() {
         // Stop any progress animation
+        self.checkoutView.alpha = 0
         self.progressBar.stopAnimating()
 
         // Prepare CSS to inject
@@ -203,21 +204,29 @@ extension CheckoutWebViewController: CheckoutWebViewDelegate {
         checkoutView.evaluateJavaScript(jsToInject) { [weak self] result, error in
             guard let self = self else { return }
             if let error = error {
-                print("Error injecting CSS: \(error)")
-                UIView.animate(withDuration: UINavigationController.hideShowBarDuration) {
-                    self.checkoutView.alpha = 1
+                if #available(iOS 14.0, *) {
+                    os_log(.fault, "Error injecting CSS: \(String(describing: error))")
                 }
+                self.fadeInCheckoutView()
                 return
             }
 
             // Fade in the web view only after CSS has been applied
 			// wait 0.3 seconds before fading in the web view
 			DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-				UIView.animate(withDuration: UINavigationController.hideShowBarDuration) {
-                self.checkoutView.alpha = 1
-            }
+                self.fadeInCheckoutView()
 			}
         }
+    }
+    
+    func fadeInCheckoutView() {
+        DispatchQueue.main.async {
+            os_log(.debug, "Fading in checkout view")
+            UIView.animate(withDuration: UINavigationController.hideShowBarDuration) {
+                self.checkoutView.alpha = 1
+            }
+        }
+        
     }
 
 
