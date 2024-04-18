@@ -69,7 +69,7 @@ public func present(checkout url: URL, from: UIViewController, delegate: Checkou
 /// Pushes checkout horizontally instead of vertically given a `UINavigationController`.
 @discardableResult 
 public func push(checkout url: URL, from: UINavigationController, delegate: CheckoutDelegate? = nil) -> CheckoutWebViewController {
-    let rootViewController = CheckoutWebViewController(checkoutURL: url, delegate: delegate)
+    let rootViewController = CheckoutWebViewController(checkoutURL: url, delegate: delegate, includeCloseButton: false)
     rootViewController.notifyPresented()
 	from.pushViewController(rootViewController, animated: true)
 	return rootViewController

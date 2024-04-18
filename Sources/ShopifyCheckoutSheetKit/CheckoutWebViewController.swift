@@ -52,7 +52,7 @@ public class CheckoutWebViewController: UIViewController, UIAdaptivePresentation
 
 	// MARK: Initializers
 
-	public init(checkoutURL url: URL, delegate: CheckoutDelegate? = nil) {
+    public init(checkoutURL url: URL, delegate: CheckoutDelegate? = nil, includeCloseButton: Bool = true) {
 		self.checkoutURL = url
 		self.delegate = delegate
 
@@ -65,12 +65,15 @@ public class CheckoutWebViewController: UIViewController, UIAdaptivePresentation
 
 		title = ShopifyCheckoutSheetKit.configuration.title
 
-		navigationItem.rightBarButtonItem = closeBarButtonItem
+        if includeCloseButton {
+            navigationItem.rightBarButtonItem = closeBarButtonItem
+        }
 
 		checkoutView.viewDelegate = self
 
 		view.backgroundColor = ShopifyCheckoutSheetKit.configuration.backgroundColor
 	}
+    
 
 	required init?(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
