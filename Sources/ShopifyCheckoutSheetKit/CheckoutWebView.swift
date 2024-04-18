@@ -230,9 +230,9 @@ extension CheckoutWebView: WKNavigationDelegate {
 		timer = nil
 	}
     
-    func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
-        fadeCheckoutView(alpha: 0)
-    }
+//    func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+//        fadeCheckoutView(alpha: 0)
+//    }
 
 	func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
 		viewDelegate?.checkoutViewDidFinishNavigation()
