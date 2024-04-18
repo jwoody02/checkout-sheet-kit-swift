@@ -172,7 +172,6 @@ extension CheckoutWebViewController: CheckoutWebViewDelegate {
         // Stop any progress animation
         self.progressBar.stopAnimating()
     }
-    
 
 
 	func checkoutViewDidCompleteCheckout(event: CheckoutCompletedEvent) {

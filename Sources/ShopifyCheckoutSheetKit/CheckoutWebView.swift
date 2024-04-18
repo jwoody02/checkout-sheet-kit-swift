@@ -43,6 +43,8 @@ class CheckoutWebView: WKWebView {
 	static weak var uncacheableViewRef: CheckoutWebView?
 
 	var isBridgeAttached = false
+    
+    let fadeLock = NSLock()
 
 	static func `for`(checkout url: URL) -> CheckoutWebView {
 		let cacheKey = url.absoluteString
@@ -198,7 +200,7 @@ extension CheckoutWebView: WKNavigationDelegate {
         }
         decisionHandler(.allow)
         
-//        fadeCheckoutView(alpha: 0)
+        fadeCheckoutView(alpha: 0)
     }
 
     func handleResponse(_ response: HTTPURLResponse) -> WKNavigationResponsePolicy {
@@ -292,13 +294,17 @@ extension CheckoutWebView: WKNavigationDelegate {
             }
         }
     }
-    
     func fadeCheckoutView(alpha: Double = 1.0) {
+        fadeLock.lock()
         DispatchQueue.main.async {
-            os_log(.debug, "Fading in checkout view")
-            UIView.animate(withDuration: 0.3) {
-                self.alpha = alpha
+            if #available(iOS 14.0, *) {
+                os_log(.debug, "Fading checkout view to alpha \(String(format: "%f", alpha))")
             }
+            UIView.animate(withDuration: 0.3, animations: {
+                self.alpha = alpha
+            }, completion: { _ in
+                self.fadeLock.unlock()
+            })
         }
         
     }
