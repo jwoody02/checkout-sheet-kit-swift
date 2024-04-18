@@ -199,8 +199,6 @@ extension CheckoutWebView: WKNavigationDelegate {
             return
         }
         decisionHandler(.allow)
-        
-        fadeCheckoutView(alpha: 0)
     }
 
     func handleResponse(_ response: HTTPURLResponse) -> WKNavigationResponsePolicy {
@@ -231,6 +229,10 @@ extension CheckoutWebView: WKNavigationDelegate {
 	func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
 		timer = nil
 	}
+    
+    func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+        fadeCheckoutView(alpha: 0)
+    }
 
 	func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
 		viewDelegate?.checkoutViewDidFinishNavigation()
