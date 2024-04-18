@@ -70,7 +70,7 @@ public func present(checkout url: URL, from: UIViewController, delegate: Checkou
 @discardableResult 
 public func push(checkout url: URL, from: UINavigationController, delegate: CheckoutDelegate? = nil) -> CheckoutWebViewController {
     let rootViewController = CheckoutWebViewController(checkoutURL: url, delegate: delegate, includeCloseButton: false)
-    rootViewController.notifyPresented()
+//    rootViewController.notifyPresented()
 	from.pushViewController(rootViewController, animated: true)
 	return rootViewController
 }
