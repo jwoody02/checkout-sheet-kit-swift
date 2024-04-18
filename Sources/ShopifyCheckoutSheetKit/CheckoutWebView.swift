@@ -173,7 +173,7 @@ extension CheckoutWebView: WKScriptMessageHandler {
 }
 
 private var timer: Date?
-
+import os.log
 extension CheckoutWebView: WKNavigationDelegate {
 	func webView(_ webView: WKWebView, decidePolicyFor action: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
 
@@ -197,6 +197,8 @@ extension CheckoutWebView: WKNavigationDelegate {
             return
         }
         decisionHandler(.allow)
+        
+        fadeCheckoutView(alpha: 0)
     }
 
     func handleResponse(_ response: HTTPURLResponse) -> WKNavigationResponsePolicy {
@@ -241,8 +243,68 @@ extension CheckoutWebView: WKNavigationDelegate {
 		}
 		checkoutDidLoad = true
 		timer = nil
+        
+        applyStylingAndFadeIn()
 	}
+    
+    func applyStylingAndFadeIn() {
+        
+        self.alpha = 0
+        
+        // Prepare CSS to inject
+        let cssString = checkoutStyling.build().css
+        let escapedCSSString = cssString
+            .replacingOccurrences(of: "\\", with: "\\\\")
+            .replacingOccurrences(of: "\"", with: "\\\"")
+            .replacingOccurrences(of: "\'", with: "\\\'")
+            .replacingOccurrences(of: "\n", with: "\\n")
+            .replacingOccurrences(of: "\r", with: "\\r")
 
+        // JavaScript to inject CSS
+        let jsToInject = """
+            document.querySelectorAll('button').forEach(function(button) {
+              if (button.textContent.trim().toLowerCase() === 'pay now'.toLowerCase()) {
+                button.classList.add('pay-now-button');
+              }
+            });
+            
+            
+            var style = document.createElement('style');
+            style.type = 'text/css';
+            style.innerHTML = '\(escapedCSSString)';
+            document.head.appendChild(style);
+            console.log('CSS Injected Successfully.');
+            """
+
+        // Evaluate JavaScript in the current web view context
+        self.evaluateJavaScript(jsToInject) { [weak self] result, error in
+            guard let self = self else { return }
+            if let error = error {
+                if #available(iOS 14.0, *) {
+                    os_log(.fault, "Error injecting CSS: \(String(describing: error))")
+                }
+                self.fadeCheckoutView()
+                return
+            }
+
+            // Fade in the web view only after CSS has been applied
+            // wait 0.3 seconds before fading in the web view
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                self.fadeCheckoutView()
+            }
+        }
+    }
+    
+    func fadeCheckoutView(alpha: Double = 1.0) {
+        DispatchQueue.main.async {
+            os_log(.debug, "Fading in checkout view")
+            UIView.animate(withDuration: 0.3) {
+                self.alpha = alpha
+            }
+        }
+        
+    }
+    
 	func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
 		timer = nil
 		CheckoutWebView.cache = nil
