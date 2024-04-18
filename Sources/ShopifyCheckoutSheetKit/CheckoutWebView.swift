@@ -249,8 +249,6 @@ extension CheckoutWebView: WKNavigationDelegate {
     
     func applyStylingAndFadeIn() {
         
-        self.alpha = 0
-        
         // Prepare CSS to inject
         let cssString = checkoutStyling.build().css
         let escapedCSSString = cssString
