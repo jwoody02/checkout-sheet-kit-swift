@@ -12,7 +12,7 @@ public enum CheckoutCustomizationPoint: String {
     case mobileHeader = ".header-bar"
     case footer = "footer"
     case button = "button"
-    case inputField = "input-field"
+    case inputField = ".section__content .field__input"
     case h2 = "h2"
     case h3 = "h3"
     case p = "p"
